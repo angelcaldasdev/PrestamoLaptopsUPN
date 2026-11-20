@@ -27,4 +27,7 @@ Sistema de gestión de préstamos y devoluciones de laptops desarrollado en Java
 
 ## Autor
 
-Angel Caldas - [GitHub](https://github.com/angelcaldasdev)
+**Angel Caldas**
+
+- GitHub: [@angelcaldasdev](https://github.com/angelcaldasdev)
+- Repositorio: [PrestamoLaptopsUPN](https://github.com/angelcaldasdev/PrestamoLaptopsUPN)
