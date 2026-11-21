@@ -39,4 +39,63 @@ public class SistemaPrestamos {
 
         return true;
     }
+    
+    public boolean registrarLaptop(Laptop laptop) {
+
+        // Recorrer la lista de laptops
+        for (Laptop laptopRegistrado : laptops) {
+
+            // Verificar si el código ya existe
+            if (laptopRegistrado.getCodigo()
+                .equals(laptop.getCodigo())) {
+
+             return false;
+            }
+        }
+
+        // Registrar la laptop
+        laptops.add(laptop);
+
+        return true;
+    }
+    
+    public Estudiante buscarEstudiante(String codigoUniversitario) {
+
+    // Recorrer la lista de estudiantes
+    for (Estudiante estudianteRegistrado : estudiantes) {
+
+        // Comparar los códigos
+        if (estudianteRegistrado.getCodigoUniversitario()
+        .equals(codigoUniversitario)) {
+
+            // Devolver el estudiante encontrado
+            return estudianteRegistrado;
+        }
+    }
+
+    // Si termina el recorrido sin encontrarlo
+    return null;
+    }
+    
+    
+    
+    public Laptop buscarLaptop(String codigo) {
+
+        // Recorrer la lista de laptops
+    for (Laptop laptopRegistrado : laptops) {
+
+        // Comparar los códigos
+        if (laptopRegistrado.getCodigo()
+        .equals(codigo)) {
+
+            // Devolver el laptop encontrado
+            return laptopRegistrado;
+        }
+    }
+
+    // Si termina el recorrido sin encontrarlo
+    return null;
+     
+    }
+   
 }
