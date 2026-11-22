@@ -256,15 +256,53 @@ public class FrmPrincipal extends JFrame {
         String nombre = JOptionPane.showInputDialog(
                 this, "Ingrese el nombre del estudiante:");
 
-        if (nombre == null) return;
+        if (nombre == null) {
+            return;
+        }
 
         String codigo = JOptionPane.showInputDialog(
                 this, "Ingrese el código universitario (U + 7 caracteres):");
 
-        if (codigo == null) return;
+        if (codigo == null) {
+            return;
+        }
+
+        // Validar campos vacíos
+        if (nombre.trim().isEmpty() || codigo.trim().isEmpty()) {
+
+            JOptionPane.showMessageDialog(this,
+                    "Debe completar todos los campos.",
+                    "Datos incompletos",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        codigo = codigo.trim();
+
+        // Validar formato del código
+        if (!codigo.matches("U[A-Za-z0-9]{7}")) {
+
+            JOptionPane.showMessageDialog(this,
+                    "El código universitario debe comenzar con U "
+                    + "y contener exactamente 8 caracteres.",
+                    "Código inválido",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // Verificar si el estudiante ya está registrado
+        if (sistema.buscarEstudiante(codigo) != null) {
+
+            JOptionPane.showMessageDialog(this,
+                    "El estudiante con código " + codigo
+                    + " ya se encuentra registrado.",
+                    "Estudiante duplicado",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
 
         Estudiante estudiante = new Estudiante(
-                nombre.trim(), codigo.trim());
+                nombre.trim(), codigo);
 
         if (sistema.registrarEstudiante(estudiante)) {
 
@@ -276,8 +314,8 @@ public class FrmPrincipal extends JFrame {
         } else {
 
             JOptionPane.showMessageDialog(this,
-                    "No se pudo registrar. Verifique los datos o el código.",
-                    "Error de registro",
+                    "No se pudo completar el registro.",
+                    "Error",
                     JOptionPane.ERROR_MESSAGE);
         }
 
@@ -290,20 +328,51 @@ public class FrmPrincipal extends JFrame {
         String codigo = JOptionPane.showInputDialog(
                 this, "Ingrese el código de la laptop:");
 
-        if (codigo == null) return;
+        if (codigo == null) {
+            return;
+        }
 
         String marca = JOptionPane.showInputDialog(
                 this, "Ingrese la marca:");
 
-        if (marca == null) return;
+        if (marca == null) {
+            return;
+        }
 
         String modelo = JOptionPane.showInputDialog(
                 this, "Ingrese el modelo:");
 
-        if (modelo == null) return;
+        if (modelo == null) {
+            return;
+        }
+
+        // Validar campos vacíos
+        if (codigo.trim().isEmpty()
+                || marca.trim().isEmpty()
+                || modelo.trim().isEmpty()) {
+
+            JOptionPane.showMessageDialog(this,
+                    "Debe completar todos los campos.",
+                    "Datos incompletos",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        codigo = codigo.trim();
+
+        // Verificar si la laptop ya está registrada
+        if (sistema.buscarLaptop(codigo) != null) {
+
+            JOptionPane.showMessageDialog(this,
+                    "La laptop con código " + codigo
+                    + " ya se encuentra registrada.",
+                    "Laptop duplicada",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
 
         Laptop laptop = new Laptop(
-                codigo.trim(), marca.trim(), modelo.trim());
+                codigo, marca.trim(), modelo.trim());
 
         if (sistema.registrarLaptop(laptop)) {
 
@@ -315,8 +384,8 @@ public class FrmPrincipal extends JFrame {
         } else {
 
             JOptionPane.showMessageDialog(this,
-                    "No se pudo registrar. Verifique los datos o el código.",
-                    "Error de registro",
+                    "No se pudo completar el registro.",
+                    "Error",
                     JOptionPane.ERROR_MESSAGE);
         }
 
@@ -329,28 +398,104 @@ public class FrmPrincipal extends JFrame {
         String codigoEstudiante = JOptionPane.showInputDialog(
                 this, "Ingrese el código del estudiante:");
 
-        if (codigoEstudiante == null) return;
+        if (codigoEstudiante == null) {
+            return;
+        }
 
         String codigoLaptop = JOptionPane.showInputDialog(
                 this, "Ingrese el código de la laptop:");
 
-        if (codigoLaptop == null) return;
+        if (codigoLaptop == null) {
+            return;
+        }
 
-        if (sistema.registrarPrestamo(
-                codigoEstudiante.trim(), codigoLaptop.trim())) {
+        // Validar campos vacíos
+        if (codigoEstudiante.trim().isEmpty()
+                || codigoLaptop.trim().isEmpty()) {
 
             JOptionPane.showMessageDialog(this,
-                    "Préstamo registrado correctamente.",
+                    "Debe ingresar ambos códigos.",
+                    "Datos incompletos",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        codigoEstudiante = codigoEstudiante.trim();
+        codigoLaptop = codigoLaptop.trim();
+
+        // Buscar estudiante y laptop
+        Estudiante estudiante =
+                sistema.buscarEstudiante(codigoEstudiante);
+
+        Laptop laptop =
+                sistema.buscarLaptop(codigoLaptop);
+
+        // Verificar existencia del estudiante
+        if (estudiante == null) {
+
+            JOptionPane.showMessageDialog(this,
+                    "No existe un estudiante registrado con el código "
+                    + codigoEstudiante + ".",
+                    "Estudiante no encontrado",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // Verificar existencia de la laptop
+        if (laptop == null) {
+
+            JOptionPane.showMessageDialog(this,
+                    "No existe una laptop registrada con el código "
+                    + codigoLaptop + ".",
+                    "Laptop no encontrada",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // Verificar disponibilidad de la laptop
+        if (!laptop.isDisponible()) {
+
+            JOptionPane.showMessageDialog(this,
+                    "La laptop " + codigoLaptop
+                    + " actualmente se encuentra prestada.",
+                    "Laptop no disponible",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // Verificar si el estudiante tiene un préstamo activo
+        for (Prestamo prestamo : sistema.listarPrestamos()) {
+
+            if (prestamo.isActivo()
+                    && prestamo.getEstudiante()
+                            .getCodigoUniversitario()
+                            .equals(codigoEstudiante)) {
+
+                JOptionPane.showMessageDialog(this,
+                        "El estudiante " + estudiante.getNombre()
+                        + " ya tiene un préstamo activo.",
+                        "Préstamo existente",
+                        JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+        }
+
+        // Registrar préstamo
+        if (sistema.registrarPrestamo(
+                codigoEstudiante, codigoLaptop)) {
+
+            JOptionPane.showMessageDialog(this,
+                    "Préstamo registrado correctamente.\n"
+                    + "Estudiante: " + estudiante.getNombre()
+                    + "\nLaptop: " + codigoLaptop,
                     "Préstamo exitoso",
                     JOptionPane.INFORMATION_MESSAGE);
 
         } else {
 
             JOptionPane.showMessageDialog(this,
-                    "No se pudo registrar el préstamo. Verifique que "
-                    + "el estudiante exista, que no tenga otro préstamo "
-                    + "activo y que la laptop esté disponible.",
-                    "Error en el préstamo",
+                    "No se pudo completar el préstamo.",
+                    "Error",
                     JOptionPane.ERROR_MESSAGE);
         }
 
@@ -363,9 +508,34 @@ public class FrmPrincipal extends JFrame {
         String codigoLaptop = JOptionPane.showInputDialog(
                 this, "Ingrese el código de la laptop a devolver:");
 
-        if (codigoLaptop == null) return;
+        if (codigoLaptop == null) {
+            return;
+        }
 
-        if (sistema.registrarDevolucion(codigoLaptop.trim())) {
+        if (codigoLaptop.trim().isEmpty()) {
+
+            JOptionPane.showMessageDialog(this,
+                    "Debe ingresar el código de la laptop.",
+                    "Dato incompleto",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        codigoLaptop = codigoLaptop.trim();
+
+        // Verificar existencia de la laptop
+        if (sistema.buscarLaptop(codigoLaptop) == null) {
+
+            JOptionPane.showMessageDialog(this,
+                    "No existe una laptop registrada con el código "
+                    + codigoLaptop + ".",
+                    "Laptop no encontrada",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // Registrar devolución
+        if (sistema.registrarDevolucion(codigoLaptop)) {
 
             JOptionPane.showMessageDialog(this,
                     "Devolución registrada correctamente. "
@@ -376,9 +546,10 @@ public class FrmPrincipal extends JFrame {
         } else {
 
             JOptionPane.showMessageDialog(this,
-                    "No existe un préstamo activo para esa laptop.",
-                    "Error en la devolución",
-                    JOptionPane.ERROR_MESSAGE);
+                    "La laptop " + codigoLaptop
+                    + " no tiene un préstamo activo para devolver.",
+                    "Sin préstamo activo",
+                    JOptionPane.WARNING_MESSAGE);
         }
 
         actualizarListas();
