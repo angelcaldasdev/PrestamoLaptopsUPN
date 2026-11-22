@@ -44,7 +44,6 @@ public class Prestamo {
     
     // Set
     
-
     public void setFechaDevolucion(LocalDate fechaDevolucion) {
         this.fechaDevolucion = fechaDevolucion;
         this.activo = false;
@@ -56,7 +55,8 @@ public class Prestamo {
         return "Estudiante: " + estudiante
             + " | Laptop: " + laptop
             + " | Fecha de préstamo: " + fechaPrestamo
-            + " | Fecha de devolución: " + fechaDevolucion
+            + " | Fecha de devolución: "
+            + (fechaDevolucion == null ? "Pendiente" : fechaDevolucion)
             + " | Estado: " + (activo ? "Activo" : "Finalizado");
     }
     
