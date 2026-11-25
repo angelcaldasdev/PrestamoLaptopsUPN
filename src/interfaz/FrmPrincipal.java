@@ -24,7 +24,7 @@ public class FrmPrincipal extends JFrame {
     private final Color BLANCO = Color.WHITE;
     private final Color GRIS_TEXTO = new Color(90, 100, 115);
 
-    // Sistema de préstamos
+    // Sistema de préstamos // proceso
     private SistemaPrestamos sistema;
 
     // Áreas de información
