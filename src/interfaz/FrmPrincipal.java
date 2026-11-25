@@ -1,4 +1,3 @@
-
 package interfaz;
 
 import java.awt.BorderLayout;
@@ -218,10 +217,12 @@ public class FrmPrincipal extends JFrame {
     }
 
     // Crear panel para cada pestaña
+    
+    // Comentario de Prueva go go go
     private JPanel crearPanel(
             JTextArea area, JButton boton, String descripcion) {
 
-        JPanel panel = new JPanel(new BorderLayout(10, 15));
+        JPanel panel = new JPanel(new BorderLayout(11, 15));
 
         panel.setBackground(FONDO);
         panel.setBorder(new EmptyBorder(20, 20, 20, 20));
